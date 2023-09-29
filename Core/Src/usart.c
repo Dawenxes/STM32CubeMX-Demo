@@ -124,4 +124,5 @@ void Usart_SendByte(uint8_t data)
 {
     HAL_USART_Transmit(&husart1, &data, 1L, 2000L);
 }
+
 /* USER CODE END 1 */
