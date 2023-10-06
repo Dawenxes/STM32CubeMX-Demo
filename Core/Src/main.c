@@ -24,6 +24,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "dma.h"
+#include "exti.h"
+#include "led.h"
+#include "beep.h"
 
 /* USER CODE END Includes */
 
@@ -88,12 +91,15 @@ int main(void) {
     /* USER CODE END SysInit */
 
     /* Initialize all configured peripherals */
-    MX_GPIO_Init();
+    //MX_GPIO_Init();
+    led_init();
+    beep_init();
+    extix_init();
+
     /* USER CODE BEGIN 2 */
     MX_USART1_Init();
-
     DMA_HandleTypeDef dmaHandleTypeDef = dma_init2();
-    HAL_DMA_Start(&dmaHandleTypeDef, (uint32_t)&aSRC_Buffer2, (uint32_t)&husart1.Instance->DR, BUFFER_SIZE2);
+    HAL_DMA_Start(&dmaHandleTypeDef, (uint32_t) &aSRC_Buffer2, (uint32_t) &husart1.Instance->DR, BUFFER_SIZE2);
 /*    __HAL_USART_CLEAR_FLAG(&husart1, USART_FLAG_TC);
     SET_BIT(husart1.Instance->CR3, USART_CR3_DMAT);*/
 

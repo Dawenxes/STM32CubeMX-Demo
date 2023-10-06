@@ -57,6 +57,10 @@ Core/Src/system_stm32f1xx.c \
 Core/Src/usart.c \
 Core/Src/dma.c \
 Core/Src/key.c \
+Core/Src/led.c \
+Core/Src/exti.c \
+Core/Src/delay.c \
+Core/Src/beep.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_usart.c
 
 # ASM sources
