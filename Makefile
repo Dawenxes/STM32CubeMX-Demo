@@ -63,6 +63,9 @@ Core/Src/delay.c \
 Core/Src/beep.c \
 Core/Src/norflash.c \
 Core/Src/spi.c \
+Core/Src/24cxx.c \
+Core/Src/myiic.c \
+Core/Src/iic_system.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_usart.c
 
 # ASM sources

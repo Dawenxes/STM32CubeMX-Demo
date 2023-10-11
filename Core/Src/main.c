@@ -97,13 +97,13 @@ int main(void) {
     extix_init();
 
     /* USER CODE BEGIN 2 */
-    MX_USART1_Init();
+    usart_init(115200);
     DMA_HandleTypeDef dmaHandleTypeDef = dma_init2();
     HAL_DMA_Start(&dmaHandleTypeDef, (uint32_t) &aSRC_Buffer2, (uint32_t) &husart1.Instance->DR, BUFFER_SIZE2);
-/*    __HAL_USART_CLEAR_FLAG(&husart1, USART_FLAG_TC);
-    SET_BIT(husart1.Instance->CR3, USART_CR3_DMAT);*/
+   //__HAL_USART_CLEAR_FLAG(&husart1, USART_FLAG_TC);
+    SET_BIT(husart1.Instance->CR3, USART_CR3_DMAT);
 
-    HAL_USART_Transmit_DMA(&husart1, aSRC_Buffer2, BUFFER_SIZE2);
+    //HAL_USART_Transmit_DMA(&husart1, aSRC_Buffer2, BUFFER_SIZE2);
     for (int i = 0; i < BUFFER_SIZE2; i++) {
         aSRC_Buffer2[i] = i;
     }
@@ -114,12 +114,12 @@ int main(void) {
     while (1) {
         /* 等待 DMA1_Channel4 传输完成 */
 
-        HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
+        /*HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
         HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
         HAL_Delay(500);
         HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-        HAL_Delay(500);
+        HAL_Delay(500);*/
         //Usart_SendByte('A');
         /* USER CODE END WHILE */
 

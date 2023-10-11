@@ -39,6 +39,7 @@ void key_init(void)
 * @arg 1, 支持连续按(当按键按下不放时, 每次调用该函数都会返回键值)
 * @retval 键值, 定义如下:
 * KEY0_PRES, 1, KEY0 按下
+ *
 * KEY1_PRES, 2, KEY1 按下
 * WKUP_PRES, 3, WKUP 按下
 */
