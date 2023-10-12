@@ -17,7 +17,7 @@
   
 #include "bsp_debug_usart.h"
 
-UART_HandleTypeDef UartHandle;
+UART_HandleTypeDef husart1;
 //extern uint8_t ucTemp;  
 
  /**
@@ -26,21 +26,21 @@ UART_HandleTypeDef UartHandle;
   * @retval 无
   */  
 void DEBUG_USART_Config(void)
-{ 
+{
+
+    husart1.Instance          = DEBUG_USART;
+
+    husart1.Init.BaudRate     = DEBUG_USART_BAUDRATE;
+    husart1.Init.WordLength   = UART_WORDLENGTH_8B;
+    husart1.Init.StopBits     = UART_STOPBITS_1;
+    husart1.Init.Parity       = UART_PARITY_NONE;
+    husart1.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
+    husart1.Init.Mode         = UART_MODE_TX_RX;
   
-  UartHandle.Instance          = DEBUG_USART;
-  
-  UartHandle.Init.BaudRate     = DEBUG_USART_BAUDRATE;
-  UartHandle.Init.WordLength   = UART_WORDLENGTH_8B;
-  UartHandle.Init.StopBits     = UART_STOPBITS_1;
-  UartHandle.Init.Parity       = UART_PARITY_NONE;
-  UartHandle.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
-  UartHandle.Init.Mode         = UART_MODE_TX_RX;
-  
-  HAL_UART_Init(&UartHandle);
+  HAL_UART_Init(&husart1);
    
  /*使能串口接收断 */
- // __HAL_UART_ENABLE_IT(&UartHandle,UART_IT_RXNE);  
+ // __HAL_UART_ENABLE_IT(&husart1,UART_IT_RXNE);
 }
 
 
@@ -85,7 +85,7 @@ void Usart_SendString(uint8_t *str)
 	unsigned int k=0;
   do 
   {
-      HAL_UART_Transmit(&UartHandle,(uint8_t *)(str + k) ,1,1000);
+      HAL_UART_Transmit(&husart1, (uint8_t *)(str + k) , 1, 1000);
       k++;
   } while(*(str + k)!='\0');
   
@@ -94,7 +94,7 @@ void Usart_SendString(uint8_t *str)
 int fputc(int ch, FILE *f)
 {
 	/* 发送一个字节数据到串口DEBUG_USART */
-	HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 1000);	
+	HAL_UART_Transmit(&husart1, (uint8_t *)&ch, 1, 1000);
 	
 	return (ch);
 }
@@ -103,7 +103,7 @@ int fputc(int ch, FILE *f)
 int fgetc(FILE *f)
 {		
 	int ch;
-	HAL_UART_Receive(&UartHandle, (uint8_t *)&ch, 1, 1000);	
+	HAL_UART_Receive(&husart1, (uint8_t *)&ch, 1, 1000);
 	return (ch);
 }
 

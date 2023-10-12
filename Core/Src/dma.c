@@ -2,8 +2,7 @@
 // Created by 阳庆瑶 on 2023/9/16.
 //
 #include "dma.h"
-#include "usart.h"
-extern USART_HandleTypeDef husart1;
+
 
 
 const uint32_t aSRC_Buffer[BUFFER_SIZE] = {
@@ -28,23 +27,4 @@ void dma_init() {
     DMA_Struct.Priority = DMA_PRIORITY_VERY_HIGH;
     HAL_DMA_Init(&dmaHandleTypeDef);
     HAL_DMA_Start(&dmaHandleTypeDef, (uint32_t) aSRC_Buffer, (uint32_t) dest, BUFFER_SIZE);
-}
-
-struct __DMA_HandleTypeDef dma_init2() {
-    __HAL_RCC_DMA1_CLK_ENABLE();
-    __HAL_LINKDMA(&husart1, hdmatx, dmaHandleTypeDef);
-
-    //dmaHandleTypeDef.State = HAL_DMA_STATE_READY;
-    dmaHandleTypeDef.DmaBaseAddress = DMA1;
-    dmaHandleTypeDef.Instance = DMA1_Channel4;
-
-    dmaHandleTypeDef.Init.Direction = DMA_MEMORY_TO_PERIPH;
-    dmaHandleTypeDef.Init.PeriphInc = DMA_PINC_DISABLE;
-    dmaHandleTypeDef.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    dmaHandleTypeDef.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    dmaHandleTypeDef.Init.MemInc = DMA_MINC_ENABLE;
-    dmaHandleTypeDef.Init.Mode = DMA_NORMAL;
-    dmaHandleTypeDef.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-    HAL_DMA_Init(&dmaHandleTypeDef);
-    return dmaHandleTypeDef;
 }

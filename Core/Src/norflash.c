@@ -24,7 +24,7 @@
 
 #include "spi.h"
 #include "delay.h"
-#include "usart.h"
+#include "bsp_debug_usart.h"
 #include "norflash.h"
 
 

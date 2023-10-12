@@ -28,5 +28,5 @@ void Usart_SendString(uint8_t *str);
 void DEBUG_USART_Config(void);
 int fputc(int ch, FILE *f);
 int fgetc(FILE *f);
-extern UART_HandleTypeDef UartHandle;
+extern UART_HandleTypeDef husart1;
 #endif /* __USART1_H */

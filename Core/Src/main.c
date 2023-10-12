@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -50,7 +49,6 @@
 /* USER CODE BEGIN PV */
 extern uint32_t dest[16];
 extern uint8_t aSRC_Buffer2[BUFFER_SIZE2];
-extern USART_HandleTypeDef husart1;
 
 /* USER CODE END PV */
 
@@ -97,16 +95,7 @@ int main(void) {
     extix_init();
 
     /* USER CODE BEGIN 2 */
-    usart_init(115200);
-    DMA_HandleTypeDef dmaHandleTypeDef = dma_init2();
-    HAL_DMA_Start(&dmaHandleTypeDef, (uint32_t) &aSRC_Buffer2, (uint32_t) &husart1.Instance->DR, BUFFER_SIZE2);
-   //__HAL_USART_CLEAR_FLAG(&husart1, USART_FLAG_TC);
-    SET_BIT(husart1.Instance->CR3, USART_CR3_DMAT);
 
-    //HAL_USART_Transmit_DMA(&husart1, aSRC_Buffer2, BUFFER_SIZE2);
-    for (int i = 0; i < BUFFER_SIZE2; i++) {
-        aSRC_Buffer2[i] = i;
-    }
     /* USER CODE END 2 */
 
     /* Infinite loop */
