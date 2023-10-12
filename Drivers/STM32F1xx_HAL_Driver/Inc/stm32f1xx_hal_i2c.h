@@ -61,7 +61,7 @@ typedef struct
   uint32_t DualAddressMode;  /*!< Specifies if dual addressing mode is selected.
                                   This parameter can be a value of @ref I2C_dual_addressing_mode */
 
-  uint32_t OwnAddress2;      /*!< Specifies the second device own address if dual addressing mode is selected
+  uint32_t OwnAddress2;      /*!< S pecifies the second device own address if dual addressing mode is selected
                                   This parameter can be a 7-bit address. */
 
   uint32_t GeneralCallMode;  /*!< Specifies if general call mode is selected.
