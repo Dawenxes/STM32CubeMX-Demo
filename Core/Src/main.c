@@ -89,7 +89,6 @@ int main(void) {
 
     /* Configure the system clock */
     SystemClock_Config();
-
     /* USER CODE BEGIN SysInit */
 
     /* USER CODE END SysInit */
@@ -107,7 +106,7 @@ int main(void) {
     printf("\r\n 欢迎使用野火  STM32 F103 开发板。\r\n");
     printf("\r\n 这是一个I2C外设(AT24C02)读写测试例程 \r\n");
 
-    I2C_EE_Init();
+/*    I2C_EE_Init();
     if(I2C_Test() ==1)
     {
         LED0_TOGGLE();
@@ -115,7 +114,7 @@ int main(void) {
     else
     {
         LED1_TOGGLE();
-    }
+    }*/
 
     /* USER CODE END 2 */
 
@@ -123,6 +122,9 @@ int main(void) {
     /* USER CODE BEGIN WHILE */
     while (1) {
         /* USER CODE END WHILE */
+        LED1_TOGGLE();
+        HAL_Delay(2000);
+        printf("\r\n 欢迎使用野火  STM32 F103 开发板。\r\n");
 
         /* USER CODE BEGIN 3 */
     }

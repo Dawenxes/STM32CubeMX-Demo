@@ -60,7 +60,6 @@ Core/Src/dma.c \
 Core/Src/key.c \
 Core/Src/led.c \
 Core/Src/exti.c \
-Core/Src/delay.c \
 Core/Src/beep.c \
 Core/Src/norflash.c \
 Core/Src/spi.c \

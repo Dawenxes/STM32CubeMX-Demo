@@ -23,7 +23,6 @@
  */
 
 #include "spi.h"
-#include "delay.h"
 #include "bsp_debug_usart.h"
 #include "norflash.h"
 
