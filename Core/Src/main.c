@@ -28,6 +28,7 @@
 #include "beep.h"
 #include "bsp_debug_usart.h"
 #include "bsp_i2c_ee.h"
+#include "delay.h"
 
 /* USER CODE END Includes */
 
@@ -90,7 +91,7 @@ int main(void) {
     /* Configure the system clock */
     SystemClock_Config();
     /* USER CODE BEGIN SysInit */
-
+    delay_init(72);
     /* USER CODE END SysInit */
 
     /* Initialize all configured peripherals */
@@ -106,7 +107,7 @@ int main(void) {
     printf("\r\n 欢迎使用野火  STM32 F103 开发板。\r\n");
     printf("\r\n 这是一个I2C外设(AT24C02)读写测试例程 \r\n");
 
-/*    I2C_EE_Init();
+    I2C_EE_Init();
     if(I2C_Test() ==1)
     {
         LED0_TOGGLE();
@@ -114,7 +115,7 @@ int main(void) {
     else
     {
         LED1_TOGGLE();
-    }*/
+    }
 
     /* USER CODE END 2 */
 
@@ -123,7 +124,7 @@ int main(void) {
     while (1) {
         /* USER CODE END WHILE */
         LED1_TOGGLE();
-        HAL_Delay(2000);
+        delay_ms(2000);
         printf("\r\n 欢迎使用野火  STM32 F103 开发板。\r\n");
         /* USER CODE BEGIN 3 */
     }

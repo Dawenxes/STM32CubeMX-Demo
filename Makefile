@@ -56,6 +56,7 @@ Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c \
 Core/Src/system_stm32f1xx.c \
+Core/Src/delay.c \
 Core/Src/dma.c \
 Core/Src/key.c \
 Core/Src/led.c \

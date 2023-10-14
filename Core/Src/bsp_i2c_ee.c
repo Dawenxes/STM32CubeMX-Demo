@@ -89,7 +89,9 @@ static void I2C_Mode_Config(void) {
   * @param  无
   * @retval 无
   */
-void I2C_EE_Init(void) {
+void
+
+I2C_EE_Init(void) {
     I2C_Mode_Config();
 }
 

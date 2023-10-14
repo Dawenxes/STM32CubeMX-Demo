@@ -26,6 +26,7 @@
 #include "key.h"
 #include "led.h"
 #include "beep.h"
+#include "delay.h"
 
 
 /**
@@ -70,7 +71,7 @@ void WKUP_INT_IRQHandler(void)
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    HAL_Delay(20);      /* 消抖 */
+    delay_ms(20);      /* 消抖 */
     switch(GPIO_Pin)
     {
         case KEY0_INT_GPIO_PIN:
