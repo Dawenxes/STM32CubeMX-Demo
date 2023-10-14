@@ -39,7 +39,7 @@ void DEBUG_USART_Config(void) {
     HAL_UART_Init(&husart1);
 
     /*使能串口接收断 */
-     __HAL_UART_ENABLE_IT(&husart1,UART_IT_RXNE);
+    //__HAL_UART_ENABLE_IT(&husart1,UART_IT_RXNE);
 }
 
 
@@ -100,6 +100,13 @@ int fgetc(FILE *f) {
     int ch;
     HAL_UART_Receive(&husart1, (uint8_t *) &ch, 1, 1000);
     return (ch);
+}
+
+
+int _write(int fd, char *ptr, int len) {
+    /* 发送一个字节数据到串口DEBUG_USART */
+    Usart_SendString((uint8_t *) ptr);
+    return len;
 }
 
 /*********************************************END OF FILE**********************/

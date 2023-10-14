@@ -125,7 +125,6 @@ int main(void) {
         LED1_TOGGLE();
         HAL_Delay(2000);
         printf("\r\n 欢迎使用野火  STM32 F103 开发板。\r\n");
-
         /* USER CODE BEGIN 3 */
     }
     /* USER CODE END 3 */
