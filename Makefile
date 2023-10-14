@@ -53,6 +53,8 @@ Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c \
 Core/Src/system_stm32f1xx.c \
 Core/Src/dma.c \
 Core/Src/key.c \
@@ -63,8 +65,7 @@ Core/Src/beep.c \
 Core/Src/norflash.c \
 Core/Src/spi.c \
 Core/Src/bsp_debug_usart.c \
-Core/Src/bsp_i2c_ee.c \
-Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_usart.c
+Core/Src/bsp_i2c_ee.c
 
 # ASM sources
 ASM_SOURCES =  \

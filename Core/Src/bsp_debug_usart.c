@@ -37,7 +37,7 @@ void DEBUG_USART_Config(void)
     husart1.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
     husart1.Init.Mode         = UART_MODE_TX_RX;
   
-  HAL_UART_Init(&husart1);
+    HAL_UART_Init(&husart1);
    
  /*使能串口接收断 */
  // __HAL_UART_ENABLE_IT(&husart1,UART_IT_RXNE);

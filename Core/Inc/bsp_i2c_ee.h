@@ -72,5 +72,6 @@ uint32_t I2C_EE_ByteWrite(uint8_t* pBuffer, uint8_t WriteAddr);
 uint32_t I2C_EE_PageWrite(uint8_t* pBuffer, uint8_t WriteAddr, uint8_t NumByteToWrite);
 uint32_t I2C_EE_BufferRead(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead);
 
+
 extern I2C_HandleTypeDef  I2C_Handle; 
 #endif /* __I2C_EE_H */
