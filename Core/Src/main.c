@@ -18,17 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "gpio.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "dma.h"
 #include "exti.h"
 #include "led.h"
 #include "beep.h"
 #include "bsp_debug_usart.h"
-#include "bsp_i2c_ee.h"
 #include "delay.h"
+#include "oled.h"
 
 /* USER CODE END Includes */
 
@@ -39,11 +36,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define  DATA_Size			256
-#define  EEP_Firstpage      0x00
-uint8_t I2c_Buf_Write[DATA_Size];
-uint8_t I2c_Buf_Read[DATA_Size];
-uint8_t I2C_Test(void);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -54,8 +46,6 @@ uint8_t I2C_Test(void);
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern uint32_t dest[16];
-extern uint8_t aSRC_Buffer2[BUFFER_SIZE2];
 
 /* USER CODE END PV */
 
@@ -105,30 +95,33 @@ int main(void) {
     DEBUG_USART_Config();
 
     printf("Welcome STM32F103\n");
-    printf("I2C--AT24C02\n");
 
-    I2C_EE_Init();
-    if(I2C_Test() ==1)
+    uint8_t t = 0;
+    t = ' ';
+    oled_init();                            /* 初始化OLED */
+
+    oled_show_string(0, 0, "ALIENTEK", 24);
+    oled_show_string(0, 24, "0.96' OLED TEST", 16);
+    oled_show_string(0, 52, "ASCII:", 12);
+    oled_show_string(64, 52, "CODE:", 12);
+    oled_refresh_gram();                    /* 更新显示到OLED */
+
+    t = ' ';
+    while (1)
     {
-        LED0_TOGGLE();
-    }
-    else
-    {
-        LED1_TOGGLE();
-    }
+        oled_show_char(36, 52, t, 12, 1);   /* 显示ASCII字符 */
+        oled_show_num(94, 52, t, 3, 12);    /*显示ASCII字符的码值 */
+        oled_refresh_gram();                /*更新显示到OLED */
+        t++;
 
-    /* USER CODE END 2 */
+        if (t > '~')
+        {
+            t = ' ';
+        }
 
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    while (1) {
-        /* USER CODE END WHILE */
-        LED1_TOGGLE();
-        HAL_Delay(2000);
-        delay_ms(2000);
-        /* USER CODE BEGIN 3 */
+        delay_ms(500);
+        LED0_TOGGLE();                      /* LED0闪烁 */
     }
-    /* USER CODE END 3 */
 }
 
 /**
@@ -174,43 +167,6 @@ void SystemClock_Config(void) {
   * @param  无
   * @retval 正常返回1 ，不正常返回0
   */
-uint8_t I2C_Test(void)
-{
-    uint16_t i;
-
-    EEPROM_INFO("Write Data");
-
-    for ( i=0; i<DATA_Size; i++ ) //填充缓冲
-    {
-        I2c_Buf_Write[i] =i;
-        printf("0x%02X ", I2c_Buf_Write[i]);
-        if(i%16 == 15)
-            printf("\n");
-    }
-
-    //将I2c_Buf_Write中顺序递增的数据写入EERPOM中
-    I2C_EE_BufferWrite( I2c_Buf_Write, EEP_Firstpage, DATA_Size);
-
-    EEPROM_INFO("Read Data");
-    //将EEPROM读出数据顺序保持到I2c_Buf_Read中
-    I2C_EE_BufferRead(I2c_Buf_Read, EEP_Firstpage, DATA_Size);
-    //将I2c_Buf_Read中的数据通过串口打印
-    for (i=0; i<DATA_Size; i++)
-    {
-        if(I2c_Buf_Read[i] != I2c_Buf_Write[i])
-        {
-            printf("0x%02X ", I2c_Buf_Read[i]);
-            EEPROM_ERROR("ERROR:I2C EEPROM not same");
-            return 0;
-        }
-        printf("0x%02X ", I2c_Buf_Read[i]);
-        if(i%16 == 15)
-            printf("\n\r");
-
-    }
-    EEPROM_INFO("I2C(AT24C02) Test Success");
-    return 1;
-}
 /* USER CODE END 4 */
 
 /**

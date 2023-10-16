@@ -106,8 +106,7 @@ __attribute__((weak)) int fgetc(FILE *f) {
 __attribute__((weak)) int _write(int file, char *ptr, int len){
     /* 发送一个字节数据到串口DEBUG_USART */
 
-    if(HAL_UART_Transmit(&husart1,ptr,len,0xffff) != HAL_OK)
-    {
+    if (HAL_UART_Transmit(&husart1, (uint8_t *) ptr, len, 0xffff) != HAL_OK) {
         Error_Handler();
     }
     return len;
