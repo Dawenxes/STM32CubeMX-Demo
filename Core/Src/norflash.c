@@ -70,7 +70,7 @@ void norflash_init(void)
         }
     }
 
-    //printf("ID:%x\r\n", g_norflash_type);
+    printf("ID:%x\r\n", g_norflash_type);
 }
 
 /**
