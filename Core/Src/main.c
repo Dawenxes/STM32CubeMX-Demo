@@ -84,34 +84,36 @@ int main(void) {
     delay_init(72);
     /* USER CODE END SysInit */
 
-    /* Initialize all configured peripherals */
+    /* Initialize all configured periph
+     *
+     * erals */
     //MX_GPIO_Init();
     led_init();
     beep_init();
     extix_init();
 
     /* USER CODE BEGIN 2 */
-    /*åˆå§‹åŒ–USART é…ç½®æ¨¡å¼ä¸º 115200 8-N-1ï¼Œä¸­æ–­æ¥æ”¶*/
+    /*³õÊ¼»¯USART ÅäÖÃÄ£Ê½Îª 115200 8-N-1£¬ÖĞ¶Ï½ÓÊÕ*/
     DEBUG_USART_Config();
 
     printf("Welcome STM32F103\n");
 
     uint8_t t = 0;
     t = ' ';
-    oled_init();                            /* åˆå§‹åŒ–OLED */
+    oled_init();                            /* ³õÊ¼»¯OLED */
 
     oled_show_string(0, 0, "ALIENTEK", 24);
     oled_show_string(0, 24, "0.96' OLED TEST", 16);
     oled_show_string(0, 52, "ASCII:", 12);
     oled_show_string(64, 52, "CODE:", 12);
-    oled_refresh_gram();                    /* æ›´æ–°æ˜¾ç¤ºåˆ°OLED */
+    oled_refresh_gram();                    /* ¸üĞÂÏÔÊ¾µ½OLED */
 
     t = ' ';
     while (1)
     {
-        oled_show_char(36, 52, t, 12, 1);   /* æ˜¾ç¤ºASCIIå­—ç¬¦ */
-        oled_show_num(94, 52, t, 3, 12);    /*æ˜¾ç¤ºASCIIå­—ç¬¦çš„ç å€¼ */
-        oled_refresh_gram();                /*æ›´æ–°æ˜¾ç¤ºåˆ°OLED */
+        oled_show_char(36, 52, t, 12, 1);   /* ÏÔÊ¾ASCII×Ö·û */
+        oled_show_num(94, 52, t, 3, 12);    /*ÏÔÊ¾ASCII×Ö·ûµÄÂëÖµ */
+        oled_refresh_gram();                /*¸üĞÂÏÔÊ¾µ½OLED */
         t++;
 
         if (t > '~')
@@ -120,7 +122,7 @@ int main(void) {
         }
 
         delay_ms(500);
-        LED0_TOGGLE();                      /* LED0é—ªçƒ */
+        LED0_TOGGLE();                      /* LED0ÉÁË¸ */
     }
 }
 
@@ -163,9 +165,9 @@ void SystemClock_Config(void) {
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  I2C(AT24C02)è¯»å†™æµ‹è¯•
-  * @param  æ— 
-  * @retval æ­£å¸¸è¿”å›1 ï¼Œä¸æ­£å¸¸è¿”å›0
+  * @brief  I2C(AT24C02)¶ÁĞ´²âÊÔ
+  * @param  ÎŞ
+  * @retval Õı³£·µ»Ø1 £¬²»Õı³£·µ»Ø0
   */
 /* USER CODE END 4 */
 
