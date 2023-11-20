@@ -33,7 +33,8 @@
 #include "led.h"
 
 
-TIM_HandleTypeDef g_timx_handle; /* 定时器x句柄 */
+TIM_HandleTypeDef g_btimx_handle; /* 定时器x句柄 */
+uint32_t num;
 
 /**
  * @brief       通用定时器TIMX定时中断初始化函数
@@ -47,20 +48,19 @@ TIM_HandleTypeDef g_timx_handle; /* 定时器x句柄 */
  * @param       psc: 时钟预分频数
  * @retval      无
  */
-void gtim_timx_int_init(uint16_t arr, uint16_t psc)
-{
+void gtim_timx_int_init(uint16_t arr, uint16_t psc) {
     GTIM_TIMX_INT_CLK_ENABLE();                                 /* 使能TIMx时钟 */
 
-    g_timx_handle.Instance = GTIM_TIMX_INT;                     /* 通用定时器x */
-    g_timx_handle.Init.Prescaler = psc;                         /* 预分频系数 */
-    g_timx_handle.Init.CounterMode = TIM_COUNTERMODE_UP;        /* 递增计数模式 */
-    g_timx_handle.Init.Period = arr;                            /* 自动装载值 */
-    HAL_TIM_Base_Init(&g_timx_handle);
+    g_btimx_handle.Instance = GTIM_TIMX_INT;                     /* 通用定时器x */
+    g_btimx_handle.Init.Prescaler = psc;                         /* 预分频系数 */
+    g_btimx_handle.Init.CounterMode = TIM_COUNTERMODE_UP;        /* 递增计数模式 */
+    g_btimx_handle.Init.Period = arr;                            /* 自动装载值 */
+    HAL_TIM_Base_Init(&g_btimx_handle);
 
     HAL_NVIC_SetPriority(GTIM_TIMX_INT_IRQn, 1, 3);             /* 设置中断优先级，抢占优先级1，子优先级3 */
     HAL_NVIC_EnableIRQ(GTIM_TIMX_INT_IRQn);                     /* 开启ITMx中断 */
 
-    HAL_TIM_Base_Start_IT(&g_timx_handle);                      /* 使能定时器x和定时器x更新中断 */
+    HAL_TIM_Base_Start_IT(&g_btimx_handle);                      /* 使能定时器x和定时器x更新中断 */
 }
 
 /**
@@ -68,16 +68,20 @@ void gtim_timx_int_init(uint16_t arr, uint16_t psc)
  * @param       无
  * @retval      无
  */
-void GTIM_TIMX_INT_IRQHandler(void)
-{
+void GTIM_TIMX_INT_IRQHandler(void) {
     /* 以下代码没有使用定时器HAL库共用处理函数来处理，而是直接通过判断中断标志位的方式 */
-    if(__HAL_TIM_GET_FLAG(&g_timx_handle, TIM_FLAG_UPDATE) != RESET)
-    {
+    if (__HAL_TIM_GET_FLAG(&g_btimx_handle, TIM_FLAG_UPDATE) != RESET) {
+        num++;
         LED1_TOGGLE();
-        __HAL_TIM_CLEAR_IT(&g_timx_handle, TIM_IT_UPDATE);  /* 清除定时器溢出中断标志位 */
+        __HAL_TIM_CLEAR_IT(&g_btimx_handle, TIM_IT_UPDATE);  /* 清除定时器溢出中断标志位 */
     }
 }
 
+uint32_t g_btimx_handle_get_count(void) {
+    uint32_t count = 0;
+    count = __HAL_TIM_GET_COUNTER(&g_btimx_handle);  /* 加上当前CNT的值 */
+    return count;
+}
 
 /*********************************以下是通用定时器PWM输出实验程序*************************************/
 
@@ -95,9 +99,8 @@ TIM_HandleTypeDef g_timx_pwm_chy_handle;     /* 定时器x句柄 */
  * @param       psc: 时钟预分频数
  * @retval      无
  */
-void gtim_timx_pwm_chy_init(uint16_t arr, uint16_t psc)
-{
-    TIM_OC_InitTypeDef timx_oc_pwm_chy  = {0};                          /* 定时器PWM输出配置 */
+void gtim_timx_pwm_chy_init(uint16_t arr, uint16_t psc) {
+    TIM_OC_InitTypeDef timx_oc_pwm_chy = {0};                          /* 定时器PWM输出配置 */
 
     g_timx_pwm_chy_handle.Instance = GTIM_TIMX_PWM;                     /* 定时器x */
     g_timx_pwm_chy_handle.Init.Prescaler = psc;                         /* 定时器分频 */
@@ -107,7 +110,7 @@ void gtim_timx_pwm_chy_init(uint16_t arr, uint16_t psc)
 
     timx_oc_pwm_chy.OCMode = TIM_OCMODE_PWM1;                           /* 模式选择PWM1 */
     timx_oc_pwm_chy.Pulse = arr / 2;                                    /* 设置比较值,此值用来确定占空比 */
-                                                                        /* 默认比较值为自动重装载值的一半,即占空比为50% */
+    /* 默认比较值为自动重装载值的一半,即占空比为50% */
     timx_oc_pwm_chy.OCPolarity = TIM_OCPOLARITY_LOW;                    /* 输出比较极性为低 */
     HAL_TIM_PWM_ConfigChannel(&g_timx_pwm_chy_handle, &timx_oc_pwm_chy, GTIM_TIMX_PWM_CHY); /* 配置TIMx通道y */
     HAL_TIM_PWM_Start(&g_timx_pwm_chy_handle, GTIM_TIMX_PWM_CHY);       /* 开启对应PWM通道 */
@@ -119,10 +122,8 @@ void gtim_timx_pwm_chy_init(uint16_t arr, uint16_t psc)
  * @param       htim:定时器句柄
  * @retval      无
  */
-void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == GTIM_TIMX_PWM)
-    {
+void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == GTIM_TIMX_PWM) {
         GPIO_InitTypeDef gpio_init_struct;
         GTIM_TIMX_PWM_CHY_GPIO_CLK_ENABLE();               /* 开启通道y的CPIO时钟 */
         GTIM_TIMX_PWM_CHY_CLK_ENABLE();
@@ -136,6 +137,10 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
     }
 }
 
+void setCompare(uint32_t i) {
+    __HAL_TIM_SET_COMPARE(&g_timx_pwm_chy_handle, GTIM_TIMX_PWM_CHY, i);
+
+}
 
 /*********************************通用定时器输入捕获实验程序*************************************/
 
@@ -153,20 +158,28 @@ TIM_HandleTypeDef g_timx_cap_chy_handle;      /* 定时器x句柄 */
  * @param       psc: 时钟预分频数
  * @retval      无
  */
-void gtim_timx_cap_chy_init(uint16_t arr, uint16_t psc)
-{
+void gtim_timx_cap_chy_init(uint16_t arr, uint16_t psc) {
+
     TIM_IC_InitTypeDef timx_ic_cap_chy = {0};
 
-    g_timx_cap_chy_handle.Instance = GTIM_TIMX_CAP;                     /* 定时器5 */
-    g_timx_cap_chy_handle.Init.Prescaler = psc;                         /* 定时器分频 */
-    g_timx_cap_chy_handle.Init.CounterMode = TIM_COUNTERMODE_UP;        /* 递增计数模式 */
-    g_timx_cap_chy_handle.Init.Period = arr;                            /* 自动重装载值 */
+    g_timx_cap_chy_handle.
+            Instance = GTIM_TIMX_CAP;                     /* 定时器5 */
+    g_timx_cap_chy_handle.Init.
+            Prescaler = psc;                         /* 定时器分频 */
+    g_timx_cap_chy_handle.Init.
+            CounterMode = TIM_COUNTERMODE_UP;        /* 递增计数模式 */
+    g_timx_cap_chy_handle.Init.
+            Period = arr;                            /* 自动重装载值 */
     HAL_TIM_IC_Init(&g_timx_cap_chy_handle);
 
-    timx_ic_cap_chy.ICPolarity = TIM_ICPOLARITY_RISING;                 /* 上升沿捕获 */
-    timx_ic_cap_chy.ICSelection = TIM_ICSELECTION_DIRECTTI;             /* 映射到TI1上 */
-    timx_ic_cap_chy.ICPrescaler = TIM_ICPSC_DIV1;                       /* 配置输入分频，不分频 */
-    timx_ic_cap_chy.ICFilter = 0;                                       /* 配置输入滤波器，不滤波 */
+    timx_ic_cap_chy.
+            ICPolarity = TIM_ICPOLARITY_RISING;                 /* 上升沿捕获 */
+    timx_ic_cap_chy.
+            ICSelection = TIM_ICSELECTION_DIRECTTI;             /* 映射到TI1上 */
+    timx_ic_cap_chy.
+            ICPrescaler = TIM_ICPSC_DIV1;                       /* 配置输入分频，不分频 */
+    timx_ic_cap_chy.
+            ICFilter = 0;                                       /* 配置输入滤波器，不滤波 */
     HAL_TIM_IC_ConfigChannel(&g_timx_cap_chy_handle, &timx_ic_cap_chy, GTIM_TIMX_CAP_CHY);  /* 配置TIM5通道1 */
 
     __HAL_TIM_ENABLE_IT(&g_timx_cap_chy_handle, TIM_IT_UPDATE);         /* 使能更新中断 */
@@ -180,8 +193,7 @@ void gtim_timx_cap_chy_init(uint16_t arr, uint16_t psc)
  * @note        此函数会被HAL_TIM_IC_Init()调用
  * @retval      无
  */
-void HAL_TIM_IC_MspInit(TIM_HandleTypeDef *htim)
-{
+void HAL_TIM_IC_MspInit(TIM_HandleTypeDef *htim) {
     if (htim->Instance == GTIM_TIMX_CAP)                    /*输入通道捕获*/
     {
         GPIO_InitTypeDef gpio_init_struct;
@@ -217,8 +229,7 @@ uint16_t g_timxchy_cap_val = 0;   /* 输入捕获值 */
  * @param       无
  * @retval      无
  */
-void GTIM_TIMX_CAP_IRQHandler(void)
-{
+void GTIM_TIMX_CAP_IRQHandler(void) {
     HAL_TIM_IRQHandler(&g_timx_cap_chy_handle);  /* 定时器HAL库共用处理函数 */
 }
 
@@ -228,20 +239,20 @@ void GTIM_TIMX_CAP_IRQHandler(void)
  * @note        该函数在HAL_TIM_IRQHandler中会被调用
  * @retval      无
  */
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == GTIM_TIMX_CAP)
-    {
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == GTIM_TIMX_CAP) {
         if ((g_timxchy_cap_sta & 0X80) == 0)                /* 还未成功捕获 */
         {
             if (g_timxchy_cap_sta & 0X40)                   /* 捕获到一个下降沿 */
             {
                 g_timxchy_cap_sta |= 0X80;                  /* 标记成功捕获到一次高电平脉宽 */
-                g_timxchy_cap_val = HAL_TIM_ReadCapturedValue(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY);  /* 获取当前的捕获值 */
-                TIM_RESET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY);                      /* 一定要先清除原来的设置 */
-                TIM_SET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY, TIM_ICPOLARITY_RISING); /* 配置TIM5通道1上升沿捕获 */
-            }
-            else /* 还未开始,第一次捕获上升沿 */
+                g_timxchy_cap_val = HAL_TIM_ReadCapturedValue(&g_timx_cap_chy_handle,
+                                                              GTIM_TIMX_CAP_CHY);  /* 获取当前的捕获值 */
+                TIM_RESET_CAPTUREPOLARITY(&g_timx_cap_chy_handle,
+                                          GTIM_TIMX_CAP_CHY);                      /* 一定要先清除原来的设置 */
+                TIM_SET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY,
+                                        TIM_ICPOLARITY_RISING); /* 配置TIM5通道1上升沿捕获 */
+            } else /* 还未开始,第一次捕获上升沿 */
             {
                 g_timxchy_cap_sta = 0;                              /* 清空 */
                 g_timxchy_cap_val = 0;
@@ -249,7 +260,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
                 __HAL_TIM_DISABLE(&g_timx_cap_chy_handle);          /* 关闭定时器5 */
                 __HAL_TIM_SET_COUNTER(&g_timx_cap_chy_handle, 0);   /* 定时器5计数器清零 */
                 TIM_RESET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY);   /* 一定要先清除原来的设置！！ */
-                TIM_SET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY, TIM_ICPOLARITY_FALLING); /* 定时器5通道1设置为下降沿捕获 */
+                TIM_SET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY,
+                                        TIM_ICPOLARITY_FALLING); /* 定时器5通道1设置为下降沿捕获 */
                 __HAL_TIM_ENABLE(&g_timx_cap_chy_handle);           /* 使能定时器5 */
             }
         }
@@ -262,29 +274,29 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
  * @note        此函数会被定时器中断函数共同调用的
  * @retval      无
  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == GTIM_TIMX_CAP)
     {
-        if ((g_timxchy_cap_sta & 0X80) == 0)            /* 还未成功捕获 */
+        if ((g_timxchy_cap_sta & 0X80) == 0)            *//* 还未成功捕获 *//*
         {
-            if (g_timxchy_cap_sta & 0X40)               /* 已经捕获到高电平了 */
+            if (g_timxchy_cap_sta & 0X40)               *//* 已经捕获到高电平了 *//*
             {
-                if ((g_timxchy_cap_sta & 0X3F) == 0X3F) /* 高电平太长了 */
+                if ((g_timxchy_cap_sta & 0X3F) == 0X3F) *//* 高电平太长了 *//*
                 {
-                    TIM_RESET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY);                     /* 一定要先清除原来的设置 */
-                    TIM_SET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY, TIM_ICPOLARITY_RISING);/* 配置TIM5通道1上升沿捕获 */
-                    g_timxchy_cap_sta |= 0X80;          /* 标记成功捕获了一次 */
+                    TIM_RESET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY);                     *//* 一定要先清除原来的设置 *//*
+                    TIM_SET_CAPTUREPOLARITY(&g_timx_cap_chy_handle, GTIM_TIMX_CAP_CHY, TIM_ICPOLARITY_RISING);*//* 配置TIM5通道1上升沿捕获 *//*
+                    g_timxchy_cap_sta |= 0X80;          *//* 标记成功捕获了一次 *//*
                     g_timxchy_cap_val = 0XFFFF;
                 }
-                else      /* 累计定时器溢出次数 */
+                else      *//* 累计定时器溢出次数 *//*
                 {
                     g_timxchy_cap_sta++;
                 }
             }
         }
     }
-}
+}*/
 
 
 /*********************************通用定时器脉冲计数实验程序*************************************/
@@ -292,7 +304,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 TIM_HandleTypeDef g_timx_cnt_chy_handle;        /* 定时器x句柄 */
 
 /* 记录定时器计数器的溢出次数, 方便计算总脉冲个数 */
-uint32_t g_timxchy_cnt_ofcnt = 0 ;              /* 计数溢出次数 */
+uint32_t g_timxchy_cnt_ofcnt = 0;              /* 计数溢出次数 */
 
 /**
  * @brief       通用定时器TIMX 通道Y 脉冲计数 初始化函数
@@ -306,13 +318,12 @@ uint32_t g_timxchy_cnt_ofcnt = 0 ;              /* 计数溢出次数 */
  * @param       arr: 自动重装值 
  * @retval      无
  */
-void gtim_timx_cnt_chy_init(uint16_t psc)
-{
+void gtim_timx_cnt_chy_init(uint16_t psc) {
     GPIO_InitTypeDef gpio_init_struct;
     TIM_SlaveConfigTypeDef tim_slave_config = {0};
     GTIM_TIMX_CNT_CHY_CLK_ENABLE();                                          /* 使能TIMx时钟 */
     GTIM_TIMX_CNT_CHY_GPIO_CLK_ENABLE();                                     /* 开启GPIOA时钟 */
-    
+
     g_timx_cnt_chy_handle.Instance = GTIM_TIMX_CNT;                          /* 定时器x */
     g_timx_cnt_chy_handle.Init.Prescaler = psc;                              /* 定时器分频 */
     g_timx_cnt_chy_handle.Init.CounterMode = TIM_COUNTERMODE_UP;             /* 递增计数模式 */
@@ -345,8 +356,7 @@ void gtim_timx_cnt_chy_init(uint16_t psc)
  * @param       无
  * @retval      当前计数值
  */
-uint32_t gtim_timx_cnt_chy_get_count(void)
-{
+uint32_t gtim_timx_cnt_chy_get_count(void) {
     uint32_t count = 0;
     count = g_timxchy_cnt_ofcnt * 65536;                     /* 计算溢出次数对应的计数值 */
     count += __HAL_TIM_GET_COUNTER(&g_timx_cnt_chy_handle);  /* 加上当前CNT的值 */
@@ -358,8 +368,7 @@ uint32_t gtim_timx_cnt_chy_get_count(void)
  * @param       无
  * @retval      当前计数值
  */
-void gtim_timx_cnt_chy_restart(void)
-{
+void gtim_timx_cnt_chy_restart(void) {
     __HAL_TIM_DISABLE(&g_timx_cnt_chy_handle);        /* 关闭定时器TIMX */
     g_timxchy_cnt_ofcnt = 0;                          /* 累加器清零 */
     __HAL_TIM_SET_COUNTER(&g_timx_cnt_chy_handle, 0); /* 计数器清零 */
@@ -371,15 +380,13 @@ void gtim_timx_cnt_chy_restart(void)
  * @param       无
  * @retval      无
  */
-void GTIM_TIMX_CNT_IRQHandler(void)
-{
+void GTIM_TIMX_CNT_IRQHandler(void) {
     /* 以下代码没有使用定时器HAL库共用处理函数来处理，而是直接通过判断中断标志位的方式 */
-    if(__HAL_TIM_GET_FLAG(&g_timx_cnt_chy_handle, TIM_FLAG_UPDATE) != RESET)
-    {
+    if (__HAL_TIM_GET_FLAG(&g_timx_cnt_chy_handle, TIM_FLAG_UPDATE) != RESET) {
         g_timxchy_cnt_ofcnt++;          /* 累计溢出次数 */
     }
 
-      __HAL_TIM_CLEAR_IT(&g_timx_cnt_chy_handle, TIM_IT_UPDATE);
+    __HAL_TIM_CLEAR_IT(&g_timx_cnt_chy_handle, TIM_IT_UPDATE);
 }
 
 

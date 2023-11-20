@@ -121,7 +121,7 @@ void gtim_timx_cap_chy_init(uint16_t arr, uint16_t psc);    /* 通用定时器 �
 void gtim_timx_cnt_chy_init(uint16_t psc);                  /* 通用定时器 脉冲计数初始化函数 */
 uint32_t gtim_timx_cnt_chy_get_count(void);                 /* 通用定时器 获取脉冲计数 */
 void gtim_timx_cnt_chy_restart(void);                       /* 通用定时器 重启计数器 */
-
+uint32_t g_btimx_handle_get_count(void);
 #endif
 
 

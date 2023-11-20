@@ -29,6 +29,7 @@
 
 #include "atim.h"
 #include "led.h"
+#include "sys.h"
 
 
 //TIM_HandleTypeDef g_timx_npwm_chy_handle;     /* ¶¨Ê±Æ÷x¾ä±ú */

@@ -65,10 +65,12 @@ Core/Src/beep.c \
 Core/Src/norflash.c \
 Core/Src/spi.c \
 Core/Src/bsp_debug_usart.c \
-Core/Src/oled.c \
+Core/Src/oled_i2c.c \
+Core/Src/oled_spi.c \
 Core/Src/gtim.c \
 Core/Src/atim.c \
 Core/Src/btim.c \
+Core/Src/sys.c \
 Core/Src/bsp_i2c_ee.c
 
 # ASM sources

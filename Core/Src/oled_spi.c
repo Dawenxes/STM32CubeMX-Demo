@@ -23,8 +23,8 @@
  */
 
 
-#include "oled.h"
-#include "oledfont.h"
+#include "oled_spi.h"
+#include "oledfont_spi.h"
 
 
 /*

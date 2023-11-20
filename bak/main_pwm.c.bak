@@ -25,7 +25,7 @@
 #include "beep.h"
 #include "bsp_debug_usart.h"
 #include "delay.h"
-#include "oled_i2c.h"
+#include "oled_spi.h"
 #include "gtim.h"
 
 /* USER CODE END Includes */
@@ -91,7 +91,7 @@ int main(void) {
     //MX_GPIO_Init();
     led_init();
     beep_init();
-    OLED_Init();                            /* 初始化OLED */
+    oled_init();                            /* 初始化OLED */
 
     gtim_timx_pwm_chy_init(100-1,720-1);
 
@@ -99,9 +99,10 @@ int main(void) {
     /*初始化USART 配置模式为 115200 8-N-1，中断接收*/
     DEBUG_USART_Config();
 
-    OLED_Clear();
-    OLED_ShowString(1, 1, "NUM");
-    OLED_ShowString(2, 1, "CNT");
+    oled_clear();
+    oled_show_string(0, 0, "NUM", 24);
+    oled_show_string(0, 24, "CNT", 24);
+    oled_refresh_gram();                    /* 更新显示到OLED */
 
     while (1)
     {

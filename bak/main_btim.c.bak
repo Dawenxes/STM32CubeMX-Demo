@@ -25,7 +25,7 @@
 #include "beep.h"
 #include "bsp_debug_usart.h"
 #include "delay.h"
-#include "oled_i2c.h"
+#include "oled.h"
 #include "gtim.h"
 
 /* USER CODE END Includes */
@@ -85,36 +85,29 @@ int main(void) {
     delay_init(72);
     /* USER CODE END SysInit */
 
-    /* Initialize all configured periph
-     *
-     * erals */
+    /* Initialize all configured peripherals */
     //MX_GPIO_Init();
     led_init();
     beep_init();
-    OLED_Init();                            /* ³õÊ¼»¯OLED */
+    oled_init();                            /* åˆå§‹åŒ–OLED */
 
-    gtim_timx_pwm_chy_init(100-1,720-1);
+    gtim_timx_int_init(10000-1,7200-1);
 
     /* USER CODE BEGIN 2 */
-    /*³õÊ¼»¯USART ÅäÖÃÄ£Ê½Îª 115200 8-N-1£¬ÖĞ¶Ï½ÓÊÕ*/
+    /*åˆå§‹åŒ–USART é…ç½®æ¨¡å¼ä¸º 115200 8-N-1ï¼Œä¸­æ–­æ¥æ”¶*/
     DEBUG_USART_Config();
 
-    OLED_Clear();
-    OLED_ShowString(1, 1, "NUM");
-    OLED_ShowString(2, 1, "CNT");
+    oled_clear();
+    oled_show_string(0, 0, "NUM", 24);
+    oled_show_string(0, 24, "CNT", 24);
+    oled_refresh_gram();                    /* æ›´æ–°æ˜¾ç¤ºåˆ°OLED */
 
     while (1)
     {
-        for (uint32_t i = 0; i < 100 ; ++i) {
-            setCompare(i);
-            delay_ms(10);
+        oled_show_num(72, 0, num, 5, 24);    /*æ˜¾ç¤ºASCIIå­—ç¬¦çš„ç å€¼ */
+        oled_show_num(72, 24, g_btimx_handle_get_count(), 5, 24);    /*æ˜¾ç¤ºASCIIå­—ç¬¦çš„ç å€¼ */
 
-        }
-        for (uint32_t i = 100 - 1; i > 0; --i) {
-            setCompare(i);
-            delay_ms(10);
-
-        }
+        oled_refresh_gram();                /*æ›´æ–°æ˜¾ç¤ºåˆ°OLED */
     }
 }
 
@@ -157,9 +150,9 @@ void SystemClock_Config(void) {
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  I2C(AT24C02)¶ÁĞ´²âÊÔ
-  * @param  ÎŞ
-  * @retval Õı³£·µ»Ø1 £¬²»Õı³£·µ»Ø0
+  * @brief  I2C(AT24C02)è¯»å†™æµ‹è¯•
+  * @param  æ— 
+  * @retval æ­£å¸¸è¿”å›1 ï¼Œä¸æ­£å¸¸è¿”å›0
   */
 /* USER CODE END 4 */
 

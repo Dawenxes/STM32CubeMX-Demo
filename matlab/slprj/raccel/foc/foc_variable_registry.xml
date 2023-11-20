@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MF0 version="1.1" packageUris="http://schema.mathworks.com/mf0/slsa_mm_parameter_tuning/R2021b">
+  <slsa.mm.parametertuning.VariableRegistry type="slsa.mm.parametertuning.VariableRegistry" uuid="be01baff-48c5-4f11-9b07-78bd7c8b2e61">
+    <blockParameters type="slsa.mm.parametertuning.BlockParameter" uuid="8563adae-56b5-4056-b58e-27735614794a">
+      <blockPath>foc/Repeating Sequence/Constant</blockPath>
+      <parameterName>Value</parameterName>
+      <expression type="slsa.mm.parametertuning.Expression" uuid="a38edb27-7082-4f91-8b5e-c6a3cf763970"/>
+      <valueAttributes type="slsa.mm.parametertuning.ValueAttributes" uuid="66dbd57c-b974-4af9-9d2f-9081aad52062">
+        <className>double</className>
+        <dimensions>1</dimensions>
+        <dimensions>1</dimensions>
+      </valueAttributes>
+    </blockParameters>
+    <blockParameters type="slsa.mm.parametertuning.BlockParameter" uuid="27c8d090-fad3-42b1-b135-2f8684f01b60">
+      <blockPath>foc/Repeating Sequence/Look-Up Table1</blockPath>
+      <parameterName>BreakpointsForDimension1</parameterName>
+      <expression type="slsa.mm.parametertuning.Expression" uuid="4c62e9a0-5ea8-437e-a165-919e1ee6c824"/>
+      <valueAttributes type="slsa.mm.parametertuning.ValueAttributes" uuid="388ef31b-4528-47bf-8981-281c4749dddd">
+        <className>double</className>
+        <dimensions>1</dimensions>
+        <dimensions>2</dimensions>
+      </valueAttributes>
+    </blockParameters>
+    <defaultValueCachePath>/Users/yangqingyao/Public/zbn/STM32CubeMX-Demo/matlab/slprj/raccel/foc/foc_default_variable_values.mat</defaultValueCachePath>
+    <expressions type="slsa.mm.parametertuning.Expression" uuid="a38edb27-7082-4f91-8b5e-c6a3cf763970">
+      <expression>period</expression>
+      <users type="slsa.mm.parametertuning.BlockParameter" uuid="8563adae-56b5-4056-b58e-27735614794a"/>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="ae49c79f-e91f-4726-bb1b-ac5e133ce2f4"/>
+    </expressions>
+    <expressions type="slsa.mm.parametertuning.Expression" uuid="369e8a5e-d9d4-482b-b047-ead918f3e910">
+      <expression>[0 2*pi]</expression>
+      <users type="slsa.mm.parametertuning.VariableDefinition" uuid="93f568ca-c18f-40cd-a0f3-0a9aa540c332"/>
+    </expressions>
+    <expressions type="slsa.mm.parametertuning.Expression" uuid="4c62e9a0-5ea8-437e-a165-919e1ee6c824">
+      <expression>rep_seq_t - min(rep_seq_t)</expression>
+      <users type="slsa.mm.parametertuning.BlockParameter" uuid="27c8d090-fad3-42b1-b135-2f8684f01b60"/>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="c4af0f21-c93b-499c-8d15-2514d730f33c"/>
+    </expressions>
+    <expressions type="slsa.mm.parametertuning.Expression" uuid="15cca301-c159-44b1-8a00-b32286e3d2d9">
+      <expression>X = [];
+Y = [];
+if (length(rep_seq_t) ~= length(rep_seq_y)),
+  error(&apos;Length of time vector and output vector must be the same.&apos;)
+end
+dbl_rep_seq_t = double(rep_seq_t);
+dbl_rep_seq_y = double(rep_seq_y);
+period = max(dbl_rep_seq_t) - min(dbl_rep_seq_t);
+period = str2num(sprintf(&apos;%0.5g&apos;,period));
+if ~isdeployed
+[X, Y] = genRepeatingSequenceBlockIconData(dbl_rep_seq_t, dbl_rep_seq_y);
+end
+</expression>
+      <isAssignable>false</isAssignable>
+      <ownerBlockPath>foc/Repeating Sequence</ownerBlockPath>
+      <users type="slsa.mm.parametertuning.VariableDefinition" uuid="e6d0f3b6-0780-43e9-854c-c23e9e7f2f52"/>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="c4af0f21-c93b-499c-8d15-2514d730f33c"/>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="4c2a6ec9-6211-45da-82d5-1d7332648ea8"/>
+    </expressions>
+    <expressions type="slsa.mm.parametertuning.Expression" uuid="c3ac7fe7-c565-4338-a42b-11fa60c3e401">
+      <expression>[0 0.1]</expression>
+      <users type="slsa.mm.parametertuning.VariableDefinition" uuid="d97067cd-1054-4fec-9c61-0fead51322f5"/>
+    </expressions>
+    <name>foc</name>
+    <variableDefinitions type="slsa.mm.parametertuning.VariableDefinition" uuid="e6d0f3b6-0780-43e9-854c-c23e9e7f2f52">
+      <variable type="slsa.mm.parametertuning.Variable" uuid="ae49c79f-e91f-4726-bb1b-ac5e133ce2f4"/>
+      <expression type="slsa.mm.parametertuning.Expression" uuid="15cca301-c159-44b1-8a00-b32286e3d2d9"/>
+    </variableDefinitions>
+    <variableDefinitions type="slsa.mm.parametertuning.VariableDefinition" uuid="93f568ca-c18f-40cd-a0f3-0a9aa540c332">
+      <variable type="slsa.mm.parametertuning.Variable" uuid="4c2a6ec9-6211-45da-82d5-1d7332648ea8"/>
+      <expression type="slsa.mm.parametertuning.Expression" uuid="369e8a5e-d9d4-482b-b047-ead918f3e910"/>
+    </variableDefinitions>
+    <variableDefinitions type="slsa.mm.parametertuning.VariableDefinition" uuid="d97067cd-1054-4fec-9c61-0fead51322f5">
+      <variable type="slsa.mm.parametertuning.Variable" uuid="c4af0f21-c93b-499c-8d15-2514d730f33c"/>
+      <expression type="slsa.mm.parametertuning.Expression" uuid="c3ac7fe7-c565-4338-a42b-11fa60c3e401"/>
+    </variableDefinitions>
+    <variables type="slsa.mm.parametertuning.Variable" uuid="4c2a6ec9-6211-45da-82d5-1d7332648ea8">
+      <definition type="slsa.mm.parametertuning.VariableDefinition" uuid="93f568ca-c18f-40cd-a0f3-0a9aa540c332"/>
+      <expressions type="slsa.mm.parametertuning.Expression" uuid="15cca301-c159-44b1-8a00-b32286e3d2d9"/>
+      <name>rep_seq_y</name>
+      <workspace type="slsa.mm.parametertuning.Workspace" uuid="3a2a595d-dd89-4637-824c-07cd2c8ae3b2"/>
+    </variables>
+    <variables type="slsa.mm.parametertuning.Variable" uuid="ae49c79f-e91f-4726-bb1b-ac5e133ce2f4">
+      <definition type="slsa.mm.parametertuning.VariableDefinition" uuid="e6d0f3b6-0780-43e9-854c-c23e9e7f2f52"/>
+      <expressions type="slsa.mm.parametertuning.Expression" uuid="a38edb27-7082-4f91-8b5e-c6a3cf763970"/>
+      <name>period</name>
+      <workspace type="slsa.mm.parametertuning.Workspace" uuid="3a2a595d-dd89-4637-824c-07cd2c8ae3b2"/>
+    </variables>
+    <variables type="slsa.mm.parametertuning.Variable" uuid="c4af0f21-c93b-499c-8d15-2514d730f33c">
+      <definition type="slsa.mm.parametertuning.VariableDefinition" uuid="d97067cd-1054-4fec-9c61-0fead51322f5"/>
+      <expressions type="slsa.mm.parametertuning.Expression" uuid="15cca301-c159-44b1-8a00-b32286e3d2d9"/>
+      <expressions type="slsa.mm.parametertuning.Expression" uuid="4c62e9a0-5ea8-437e-a165-919e1ee6c824"/>
+      <name>rep_seq_t</name>
+      <workspace type="slsa.mm.parametertuning.Workspace" uuid="3a2a595d-dd89-4637-824c-07cd2c8ae3b2"/>
+    </variables>
+    <workspaces type="slsa.mm.parametertuning.Workspace" uuid="3a2a595d-dd89-4637-824c-07cd2c8ae3b2">
+      <name>foc:32</name>
+      <type>MASK</type>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="4c2a6ec9-6211-45da-82d5-1d7332648ea8"/>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="ae49c79f-e91f-4726-bb1b-ac5e133ce2f4"/>
+      <variables type="slsa.mm.parametertuning.Variable" uuid="c4af0f21-c93b-499c-8d15-2514d730f33c"/>
+    </workspaces>
+  </slsa.mm.parametertuning.VariableRegistry>
+</MF0>

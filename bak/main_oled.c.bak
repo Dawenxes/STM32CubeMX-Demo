@@ -25,8 +25,7 @@
 #include "beep.h"
 #include "bsp_debug_usart.h"
 #include "delay.h"
-#include "oled_i2c.h"
-#include "gtim.h"
+#include "oled.h"
 
 /* USER CODE END Includes */
 
@@ -55,7 +54,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
-extern uint32_t num;
+
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
@@ -85,36 +84,43 @@ int main(void) {
     delay_init(72);
     /* USER CODE END SysInit */
 
-    /* Initialize all configured periph
-     *
-     * erals */
+    /* Initialize all configured peripherals */
     //MX_GPIO_Init();
     led_init();
     beep_init();
-    OLED_Init();                            /* ³õÊ¼»¯OLED */
-
-    gtim_timx_pwm_chy_init(100-1,720-1);
+    extix_init();
 
     /* USER CODE BEGIN 2 */
-    /*³õÊ¼»¯USART ÅäÖÃÄ£Ê½Îª 115200 8-N-1£¬ÖĞ¶Ï½ÓÊÕ*/
+    /*åˆå§‹åŒ–USART é…ç½®æ¨¡å¼ä¸º 115200 8-N-1ï¼Œä¸­æ–­æ¥æ”¶*/
     DEBUG_USART_Config();
 
-    OLED_Clear();
-    OLED_ShowString(1, 1, "NUM");
-    OLED_ShowString(2, 1, "CNT");
+    printf("Welcome STM32F103\n");
 
+    uint8_t t = 0;
+    t = ' ';
+    oled_init();                            /* åˆå§‹åŒ–OLED */
+
+    oled_show_string(0, 0, "ALIENTEK", 24);
+    oled_show_string(0, 24, "0.96' OLED TEST", 16);
+    oled_show_string(0, 52, "ASCII:", 12);
+    oled_show_string(64, 52, "CODE:", 12);
+    oled_refresh_gram();                    /* æ›´æ–°æ˜¾ç¤ºåˆ°OLED */
+
+    t = ' ';
     while (1)
     {
-        for (uint32_t i = 0; i < 100 ; ++i) {
-            setCompare(i);
-            delay_ms(10);
+        oled_show_char(36, 52, t, 12, 1);   /* æ˜¾ç¤ºASCIIå­—ç¬¦ */
+        oled_show_num(94, 52, t, 3, 12);    /*æ˜¾ç¤ºASCIIå­—ç¬¦çš„ç å€¼ */
+        oled_refresh_gram();                /*æ›´æ–°æ˜¾ç¤ºåˆ°OLED */
+        t++;
 
+        if (t > '~')
+        {
+            t = ' ';
         }
-        for (uint32_t i = 100 - 1; i > 0; --i) {
-            setCompare(i);
-            delay_ms(10);
 
-        }
+        delay_ms(500);
+        LED0_TOGGLE();                      /* LED0é—ªçƒ */
     }
 }
 
@@ -157,9 +163,9 @@ void SystemClock_Config(void) {
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  I2C(AT24C02)¶ÁĞ´²âÊÔ
-  * @param  ÎŞ
-  * @retval Õı³£·µ»Ø1 £¬²»Õı³£·µ»Ø0
+  * @brief  I2C(AT24C02)è¯»å†™æµ‹è¯•
+  * @param  æ— 
+  * @retval æ­£å¸¸è¿”å›1 ï¼Œä¸æ­£å¸¸è¿”å›0
   */
 /* USER CODE END 4 */
 
